@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagamento via Pix | eBook Mães Solteiras</title>
+  <meta name="description" content="Finalize seu pagamento via Pix para receber o eBook em PDF imediatamente.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #12071f;
+      --surface: #25153d;
+      --surface-2: #301d4f;
+      --text: #f6eeff;
+      --muted: #d0bce6;
+      --neon: #f4ff52;
+      --accent: #ffe8a3;
+      --ok: #96ffb5;
+      --radius-xl: 22px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 8% 8%, #6f2ab7 0%, rgba(111, 42, 183, 0) 35%),
+        radial-gradient(circle at 94% 6%, #7c3bc8 0%, rgba(124, 59, 200, 0) 30%),
+        linear-gradient(135deg, var(--bg) 0%, #18092a 100%);
+      min-height: 100vh;
+      line-height: 1.6;
+      padding: 26px 0 36px;
+    }
+
+    .container {
+      width: min(980px, 92%);
+      margin: 0 auto;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 18px;
+      font-size: 0.95rem;
+    }
+
+    .layout {
+      display: grid;
+      gap: 18px;
+    }
+
+    .card {
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      font-family: "Sora", sans-serif;
+      font-size: clamp(1.9rem, 4.7vw, 2.8rem);
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+
+    .lead {
+      color: var(--muted);
+      margin-bottom: 16px;
+      font-size: clamp(0.98rem, 2.5vw, 1.08rem);
+      max-width: 65ch;
+    }
+
+    .price {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      font-family: "Sora", sans-serif;
+      color: var(--neon);
+      font-size: clamp(2rem, 6vw, 3rem);
+      text-shadow: 0 0 18px rgba(244, 255, 82, 0.33);
+    }
+
+    .price small {
+      font-family: "Poppins", sans-serif;
+      color: var(--accent);
+      font-size: 0.92rem;
+      text-shadow: none;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .pix-box {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      background: rgba(8, 4, 15, 0.35);
+    }
+
+    .pix-box h2 {
+      font-size: 1rem;
+      color: var(--accent);
+    }
+
+    .pix-value {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.17);
+      border-radius: var(--radius-md);
+      background: rgba(7, 3, 14, 0.65);
+      color: #fff;
+      padding: 12px;
+      font-size: 0.94rem;
+      font-family: "Poppins", sans-serif;
+      outline: none;
+    }
+
+    .pix-value.code {
+      resize: vertical;
+      min-height: 92px;
+    }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--neon), #f5f8a1);
+      color: #38200b;
+      font-weight: 700;
+      padding: 13px 18px;
+      cursor: pointer;
+      transition: transform 0.24s ease, filter 0.24s ease, box-shadow 0.24s ease;
+      box-shadow: 0 14px 24px rgba(244, 255, 82, 0.22);
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      transform: translateY(-2px);
+      filter: saturate(1.1);
+      box-shadow: 0 18px 28px rgba(244, 255, 82, 0.28);
+      outline: none;
+    }
+
+    .status {
+      font-size: 0.9rem;
+      color: var(--ok);
+      min-height: 20px;
+    }
+
+    .qr-wrap {
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      background: rgba(8, 4, 15, 0.35);
+      min-height: 300px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .qr-wrap img {
+      max-width: 100%;
+      width: 280px;
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+    }
+
+    .qr-wrap.is-fallback::after {
+      content: "Adicione seu QR Code em assets/pix-qrcode.png";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 20px;
+      color: #fff;
+      background: linear-gradient(160deg, rgba(185, 109, 255, 0.5), rgba(48, 29, 79, 0.85));
+      font-weight: 600;
+    }
+
+    .list {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .list li {
+      background: rgba(8, 4, 15, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      color: var(--muted);
+    }
+
+    .notice {
+      color: #f9efba;
+      font-size: 0.9rem;
+      margin-top: 14px;
+      border: 1px dashed rgba(255, 217, 0, 0.4);
+      border-radius: 10px;
+      padding: 12px;
+      background: rgba(255, 217, 0, 0.08);
+    }
+
+    .release-box {
+      margin-top: 14px;
+      background: rgba(8, 4, 15, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .check-row input {
+      margin-top: 4px;
+      width: 16px;
+      height: 16px;
+      accent-color: #f5f8a1;
+      flex-shrink: 0;
+    }
+
+    .btn-release {
+      width: 100%;
+    }
+
+    .btn-soft {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      box-shadow: none;
+    }
+
+    .preview-tip {
+      color: var(--muted);
+      font-size: 0.86rem;
+      text-align: center;
+      margin-top: -4px;
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    @media (min-width: 850px) {
+      .layout {
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back-link" href="index.html">← Voltar para a página inicial</a>
+
+    <section class="card">
+      <h1>Finalize seu pagamento via Pix</h1>
+      <p class="lead">Você está a um passo de acessar o eBook <strong>"Como Mães Solteiras Podem Ganhar Dinheiro Sem Sair de Casa"</strong>.</p>
+      <p class="price">R$28 <small>pagamento único</small></p>
+    </section>
+
+    <section class="layout" style="margin-top: 18px;">
+      <div class="card">
+        <div class="grid">
+          <div class="pix-box">
+            <h2>Chave Pix</h2>
+            <input id="pixKey" class="pix-value" type="text" readonly value="SEU_PIX_AQUI">
+            <button class="btn" data-copy-target="pixKey">Copiar chave Pix</button>
+          </div>
+
+          <div class="pix-box">
+            <h2>Código Pix Copia e Cola</h2>
+            <textarea id="pixCode" class="pix-value code" readonly>SEU_CODIGO_PIX_COPIA_E_COLA_AQUI</textarea>
+            <button class="btn" data-copy-target="pixCode">Copiar código Pix</button>
+          </div>
+        </div>
+
+        <p id="copyStatus" class="status" aria-live="polite"></p>
+
+        <ul class="list">
+          <li><strong>1.</strong> Abra o app do seu banco e escolha pagar com Pix.</li>
+          <li><strong>2.</strong> Use a chave Pix ou escaneie o QR Code.</li>
+          <li><strong>3.</strong> Confirme o valor de <strong>R$28</strong> e finalize o pagamento.</li>
+          <li><strong>4.</strong> Depois de pagar, clique em "Já paguei, liberar página de download".</li>
+        </ul>
+
+        <div class="release-box">
+          <label class="check-row" for="paymentDoneCheck">
+            <input id="paymentDoneCheck" type="checkbox">
+            <span>Confirmo que já realizei o pagamento via Pix.</span>
+          </label>
+          <button id="releaseAccessBtn" class="btn btn-release" type="button">Já paguei, liberar página de download</button>
+          <a class="btn btn-soft" href="download.html?preview=1">Ver página de download (modo teste)</a>
+          <p class="preview-tip">Este botão é só para você validar o layout e os textos.</p>
+          <p id="releaseStatus" class="status" aria-live="polite"></p>
+        </div>
+
+        <p class="notice">Este material é educativo e não garante ganhos financeiros. Resultados dependem da sua aplicação, dedicação e consistência.</p>
+      </div>
+
+      <aside class="card">
+        <h2 style="font-size:1.2rem; margin-bottom:10px;">Pagar com QR Code</h2>
+        <p class="lead" style="margin-bottom:14px;">Escaneie com a câmera do seu banco para pagar em segundos.</p>
+        <div id="qrWrap" class="qr-wrap">
+          <img id="qrImage" src="assets/pix-qrcode.png" alt="QR Code de pagamento Pix">
+        </div>
+      </aside>
+    </section>
+
+    <p class="footer-note">Gabriel Motion Design • Suporte, Política de Privacidade e Termos de Uso</p>
+  </div>
+
+  <script>
+    const copyButtons = document.querySelectorAll("[data-copy-target]");
+    const status = document.getElementById("copyStatus");
+
+    copyButtons.forEach((button) => {
+      button.addEventListener("click", async () => {
+        const targetId = button.getAttribute("data-copy-target");
+        const field = document.getElementById(targetId);
+        const value = field.value;
+
+        try {
+          await navigator.clipboard.writeText(value);
+          status.textContent = "Copiado com sucesso.";
+        } catch (error) {
+          field.select();
+          document.execCommand("copy");
+          status.textContent = "Copiado com sucesso.";
+        }
+      });
+    });
+
+    const qrImage = document.getElementById("qrImage");
+    const qrWrap = document.getElementById("qrWrap");
+    const releaseButton = document.getElementById("releaseAccessBtn");
+    const paymentDoneCheck = document.getElementById("paymentDoneCheck");
+    const releaseStatus = document.getElementById("releaseStatus");
+
+    qrImage.addEventListener("error", () => {
+      qrImage.remove();
+      qrWrap.classList.add("is-fallback");
+    });
+
+    if (localStorage.getItem("ebook_pix_paid") === "true") {
+      releaseStatus.textContent = "Pagamento já confirmado neste navegador. Você pode seguir para o download.";
+      paymentDoneCheck.checked = true;
+    }
+
+    releaseButton.addEventListener("click", () => {
+      if (!paymentDoneCheck.checked) {
+        releaseStatus.textContent = "Marque a confirmação de pagamento para continuar.";
+        return;
+      }
+
+      localStorage.setItem("ebook_pix_paid", "true");
+      localStorage.setItem("ebook_pix_paid_at", new Date().toISOString());
+      window.location.href = "download.html";
+    });
+  </script>
+</body>
+</html>

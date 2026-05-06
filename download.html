@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download Liberado | eBook Mães Solteiras</title>
+  <meta name="description" content="Página de download do eBook após confirmação do pagamento via Pix.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #12071f;
+      --text: #f6eeff;
+      --muted: #d0bce6;
+      --accent: #ffe8a3;
+      --neon: #f4ff52;
+      --radius-xl: 22px;
+      --radius-md: 12px;
+      --shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      background:
+        radial-gradient(circle at 12% 10%, #6f2ab7 0%, rgba(111, 42, 183, 0) 38%),
+        radial-gradient(circle at 90% 8%, #7c3bc8 0%, rgba(124, 59, 200, 0) 34%),
+        linear-gradient(140deg, #12071f 0%, #1a0a2d 100%);
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .card {
+      width: min(760px, 100%);
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    h1 {
+      font-family: "Sora", sans-serif;
+      font-size: clamp(1.8rem, 4.8vw, 2.6rem);
+      line-height: 1.18;
+      margin-bottom: 10px;
+    }
+
+    .lead {
+      color: var(--muted);
+      margin-bottom: 18px;
+      font-size: clamp(0.98rem, 2.4vw, 1.08rem);
+      max-width: 62ch;
+    }
+
+    .box {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      background: rgba(8, 4, 15, 0.35);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .box p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.24s ease, filter 0.24s ease, box-shadow 0.24s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--neon), #f5f8a1);
+      color: #38200b;
+      box-shadow: 0 14px 24px rgba(244, 255, 82, 0.22);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    .btn-whatsapp {
+      background: linear-gradient(135deg, #25d366, #67e89a);
+      color: #062813;
+      box-shadow: 0 14px 24px rgba(37, 211, 102, 0.24);
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      transform: translateY(-2px);
+      filter: saturate(1.08);
+      outline: none;
+    }
+
+    .note {
+      margin-top: 10px;
+      color: #f9efba;
+      font-size: 0.9rem;
+      border: 1px dashed rgba(255, 217, 0, 0.35);
+      border-radius: 10px;
+      padding: 11px;
+      background: rgba(255, 217, 0, 0.08);
+    }
+
+    .preview-note {
+      margin-bottom: 12px;
+      color: #fff4bc;
+      font-size: 0.9rem;
+      border: 1px dashed rgba(255, 217, 0, 0.45);
+      border-radius: 10px;
+      padding: 10px 11px;
+      background: rgba(255, 217, 0, 0.12);
+    }
+
+    .meta {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <p id="previewNote" class="preview-note" style="display:none;">Modo teste ativo: esta visualização não representa pagamento confirmado.</p>
+    <h1>Acesso liberado para download</h1>
+    <p class="lead">Seu pagamento foi confirmado neste navegador. Agora você pode baixar o eBook e começar seu plano de ação.</p>
+
+    <section class="box">
+      <p><span class="strong">Produto:</span> Como Mães Solteiras Podem Ganhar Dinheiro Sem Sair de Casa</p>
+      <p><span class="strong">Formato:</span> PDF</p>
+      <p><span class="strong">Valor:</span> R$28</p>
+    </section>
+
+    <div class="actions">
+      <a class="btn btn-primary" href="assets/ebook.pdf" download>Baixar eBook agora</a>
+      <a class="btn btn-whatsapp" href="https://w.app/oihsns" target="_blank" rel="noopener noreferrer">Precisa de ajuda? Fale comigo no WhatsApp</a>
+      <a class="btn btn-secondary" href="index.html">Voltar para a página inicial</a>
+      <button id="lockAccessBtn" class="btn btn-secondary" type="button">Encerrar acesso neste navegador</button>
+    </div>
+
+    <p class="note">Se o download não iniciar, adicione seu arquivo em <strong>assets/ebook.pdf</strong> e tente novamente.</p>
+    <p id="releaseMeta" class="meta"></p>
+  </main>
+
+  <script>
+    const paidFlag = localStorage.getItem("ebook_pix_paid");
+    const paidAt = localStorage.getItem("ebook_pix_paid_at");
+    const params = new URLSearchParams(window.location.search);
+    const isPreviewMode = params.get("preview") === "1";
+    const releaseMeta = document.getElementById("releaseMeta");
+    const previewNote = document.getElementById("previewNote");
+    const lockAccessBtn = document.getElementById("lockAccessBtn");
+
+    if (isPreviewMode) {
+      previewNote.style.display = "block";
+    } else if (paidFlag !== "true") {
+      window.location.replace("pagamento-pix.html");
+    } else if (paidAt) {
+      const date = new Date(paidAt);
+      if (!Number.isNaN(date.getTime())) {
+        releaseMeta.textContent = "Liberação registrada em: " + date.toLocaleString("pt-BR");
+      }
+    }
+
+    lockAccessBtn.addEventListener("click", () => {
+      localStorage.removeItem("ebook_pix_paid");
+      localStorage.removeItem("ebook_pix_paid_at");
+      window.location.replace("pagamento-pix.html");
+    });
+  </script>
+</body>
+</html>
