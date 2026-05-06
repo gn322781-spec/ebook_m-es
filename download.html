@@ -165,7 +165,7 @@
     </section>
 
     <div class="actions">
-      <a class="btn btn-primary" href="assets/ebook.pdf" download>Baixar eBook agora</a>
+      <a id="downloadEbookBtn" class="btn btn-primary" href="#">Baixar eBook agora</a>
       <a class="btn btn-whatsapp" href="https://w.app/oihsns" target="_blank" rel="noopener noreferrer">Precisa de ajuda? Fale comigo no WhatsApp</a>
       <a class="btn btn-secondary" href="index.html">Voltar para a página inicial</a>
       <button id="lockAccessBtn" class="btn btn-secondary" type="button">Encerrar acesso neste navegador</button>
@@ -176,28 +176,57 @@
   </main>
 
   <script>
-    const paidFlag = localStorage.getItem("ebook_pix_paid");
-    const paidAt = localStorage.getItem("ebook_pix_paid_at");
     const params = new URLSearchParams(window.location.search);
     const isPreviewMode = params.get("preview") === "1";
+    const accessToken = params.get("access");
     const releaseMeta = document.getElementById("releaseMeta");
     const previewNote = document.getElementById("previewNote");
     const lockAccessBtn = document.getElementById("lockAccessBtn");
+    const downloadEbookBtn = document.getElementById("downloadEbookBtn");
+    downloadEbookBtn.addEventListener("click", (event) => {
+      if (downloadEbookBtn.getAttribute("href") === "#") {
+        event.preventDefault();
+      }
+    });
+
+    async function validateDownloadAccess() {
+      const response = await fetch(`/api/validate-download-token?token=${encodeURIComponent(accessToken)}`, {
+        cache: "no-store",
+      });
+      const data = await response.json();
+
+      if (!response.ok || !data.ok || !data.payload) {
+        throw new Error(data.error || "token_invalido");
+      }
+
+      return data.payload;
+    }
 
     if (isPreviewMode) {
       previewNote.style.display = "block";
-    } else if (paidFlag !== "true") {
+      releaseMeta.textContent = "Modo teste ativo para validação visual.";
+      downloadEbookBtn.href = "assets/ebook.pdf";
+      downloadEbookBtn.setAttribute("download", "");
+    } else if (!accessToken) {
       window.location.replace("pagamento-pix.html");
-    } else if (paidAt) {
-      const date = new Date(paidAt);
-      if (!Number.isNaN(date.getTime())) {
-        releaseMeta.textContent = "Liberação registrada em: " + date.toLocaleString("pt-BR");
-      }
+    } else {
+      validateDownloadAccess()
+        .then((payload) => {
+          downloadEbookBtn.href = `/api/download-ebook?token=${encodeURIComponent(accessToken)}`;
+          downloadEbookBtn.removeAttribute("download");
+          if (payload.iat) {
+            const iatDate = new Date(payload.iat * 1000);
+            if (!Number.isNaN(iatDate.getTime())) {
+              releaseMeta.textContent = "Liberação registrada em: " + iatDate.toLocaleString("pt-BR");
+            }
+          }
+        })
+        .catch(() => {
+          window.location.replace("pagamento-pix.html");
+        });
     }
 
     lockAccessBtn.addEventListener("click", () => {
-      localStorage.removeItem("ebook_pix_paid");
-      localStorage.removeItem("ebook_pix_paid_at");
       window.location.replace("pagamento-pix.html");
     });
   </script>

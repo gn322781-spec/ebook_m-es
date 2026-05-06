@@ -167,6 +167,38 @@
       min-height: 20px;
     }
 
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 600;
+      font-size: 0.86rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      width: fit-content;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #c3c3c3;
+    }
+
+    .status-chip.pending .status-dot {
+      background: #ffd76f;
+    }
+
+    .status-chip.paid .status-dot {
+      background: #6df0a0;
+    }
+
+    .status-chip.expired .status-dot {
+      background: #ff8c8c;
+    }
+
     .qr-wrap {
       display: grid;
       place-items: center;
@@ -270,6 +302,12 @@
       margin-top: -4px;
     }
 
+    .auto-note {
+      color: var(--muted);
+      font-size: 0.87rem;
+      text-align: center;
+    }
+
     .footer-note {
       margin-top: 20px;
       color: var(--muted);
@@ -292,6 +330,10 @@
       <h1>Finalize seu pagamento via Pix</h1>
       <p class="lead">Você está a um passo de acessar o eBook <strong>"Como Mães Solteiras Podem Ganhar Dinheiro Sem Sair de Casa"</strong>.</p>
       <p class="price">R$28 <small>pagamento único</small></p>
+      <p id="paymentStatusChip" class="status-chip">
+        <span class="status-dot"></span>
+        <span>Verificando status da cobrança...</span>
+      </p>
     </section>
 
     <section class="layout" style="margin-top: 18px;">
@@ -299,14 +341,19 @@
         <div class="grid">
           <div class="pix-box">
             <h2>Chave Pix</h2>
-            <input id="pixKey" class="pix-value" type="text" readonly value="SEU_PIX_AQUI">
+            <input id="pixKey" class="pix-value" type="text" readonly value="Carregando chave Pix...">
             <button class="btn" data-copy-target="pixKey">Copiar chave Pix</button>
           </div>
 
           <div class="pix-box">
             <h2>Código Pix Copia e Cola</h2>
-            <textarea id="pixCode" class="pix-value code" readonly>SEU_CODIGO_PIX_COPIA_E_COLA_AQUI</textarea>
+            <textarea id="pixCode" class="pix-value code" readonly>Carregando código Pix...</textarea>
             <button class="btn" data-copy-target="pixCode">Copiar código Pix</button>
+          </div>
+
+          <div class="pix-box">
+            <h2>Pagar direto no link Nubank</h2>
+            <a id="openNubankChargeBtn" class="btn" href="#" target="_blank" rel="noopener noreferrer">Abrir cobrança Nubank</a>
           </div>
         </div>
 
@@ -316,15 +363,11 @@
           <li><strong>1.</strong> Abra o app do seu banco e escolha pagar com Pix.</li>
           <li><strong>2.</strong> Use a chave Pix ou escaneie o QR Code.</li>
           <li><strong>3.</strong> Confirme o valor de <strong>R$28</strong> e finalize o pagamento.</li>
-          <li><strong>4.</strong> Depois de pagar, clique em "Já paguei, liberar página de download".</li>
+          <li><strong>4.</strong> Aguarde a verificação automática. Assim que o pagamento confirmar, o download será liberado.</li>
         </ul>
 
         <div class="release-box">
-          <label class="check-row" for="paymentDoneCheck">
-            <input id="paymentDoneCheck" type="checkbox">
-            <span>Confirmo que já realizei o pagamento via Pix.</span>
-          </label>
-          <button id="releaseAccessBtn" class="btn btn-release" type="button">Já paguei, liberar página de download</button>
+          <p class="auto-note">Verificação automática ativa. Você será redirecionada para o download assim que o pagamento for confirmado.</p>
           <a class="btn btn-soft" href="download.html?preview=1">Ver página de download (modo teste)</a>
           <p class="preview-tip">Este botão é só para você validar o layout e os textos.</p>
           <p id="releaseStatus" class="status" aria-live="polite"></p>
@@ -335,7 +378,7 @@
 
       <aside class="card">
         <h2 style="font-size:1.2rem; margin-bottom:10px;">Pagar com QR Code</h2>
-        <p class="lead" style="margin-bottom:14px;">Escaneie com a câmera do seu banco para pagar em segundos.</p>
+        <p class="lead" style="margin-bottom:14px;">Escaneie com a câmera do seu banco para pagar em segundos. O QR é atualizado automaticamente com o código Pix da cobrança.</p>
         <div id="qrWrap" class="qr-wrap">
           <img id="qrImage" src="assets/pix-qrcode.png" alt="QR Code de pagamento Pix">
         </div>
@@ -347,7 +390,7 @@
 
   <script>
     const copyButtons = document.querySelectorAll("[data-copy-target]");
-    const status = document.getElementById("copyStatus");
+    const copyStatus = document.getElementById("copyStatus");
 
     copyButtons.forEach((button) => {
       button.addEventListener("click", async () => {
@@ -357,41 +400,143 @@
 
         try {
           await navigator.clipboard.writeText(value);
-          status.textContent = "Copiado com sucesso.";
+          copyStatus.textContent = "Copiado com sucesso.";
         } catch (error) {
           field.select();
           document.execCommand("copy");
-          status.textContent = "Copiado com sucesso.";
+          copyStatus.textContent = "Copiado com sucesso.";
         }
       });
     });
 
+    const pixKeyField = document.getElementById("pixKey");
+    const pixCodeField = document.getElementById("pixCode");
     const qrImage = document.getElementById("qrImage");
     const qrWrap = document.getElementById("qrWrap");
-    const releaseButton = document.getElementById("releaseAccessBtn");
-    const paymentDoneCheck = document.getElementById("paymentDoneCheck");
+    const openNubankChargeBtn = document.getElementById("openNubankChargeBtn");
     const releaseStatus = document.getElementById("releaseStatus");
+    const paymentStatusChip = document.getElementById("paymentStatusChip");
+
+    let chargeStatus = "unknown";
+    let autoReleaseDone = false;
+    let pollTimer = null;
+    let chargeUrl = "";
+    const statusLabels = {
+      pending: "Pagamento aguardando confirmação",
+      paid: "Pagamento confirmado",
+      expired: "Cobrança encerrada/expirada",
+      unknown: "Status não identificado",
+    };
 
     qrImage.addEventListener("error", () => {
-      qrImage.remove();
       qrWrap.classList.add("is-fallback");
+      qrImage.style.display = "none";
     });
 
-    if (localStorage.getItem("ebook_pix_paid") === "true") {
-      releaseStatus.textContent = "Pagamento já confirmado neste navegador. Você pode seguir para o download.";
-      paymentDoneCheck.checked = true;
+    openNubankChargeBtn.addEventListener("click", (event) => {
+      if (!chargeUrl) {
+        event.preventDefault();
+        releaseStatus.textContent = "Ainda estou carregando o link de cobrança...";
+      }
+    });
+
+    function updateStatusChip(status) {
+      chargeStatus = status || "unknown";
+      paymentStatusChip.classList.remove("pending", "paid", "expired");
+      if (chargeStatus === "pending" || chargeStatus === "paid" || chargeStatus === "expired") {
+        paymentStatusChip.classList.add(chargeStatus);
+      }
+
+      const label = statusLabels[chargeStatus] || statusLabels.unknown;
+      paymentStatusChip.innerHTML = `<span class="status-dot"></span><span>${label}</span>`;
     }
 
-    releaseButton.addEventListener("click", () => {
-      if (!paymentDoneCheck.checked) {
-        releaseStatus.textContent = "Marque a confirmação de pagamento para continuar.";
+    function updateQrFromCode(pixCode) {
+      if (!pixCode) {
         return;
       }
 
-      localStorage.setItem("ebook_pix_paid", "true");
-      localStorage.setItem("ebook_pix_paid_at", new Date().toISOString());
-      window.location.href = "download.html";
-    });
+      const qrCodeUrl = `https://quickchart.io/qr?size=480&text=${encodeURIComponent(pixCode)}`;
+      qrImage.src = qrCodeUrl;
+      qrWrap.classList.remove("is-fallback");
+      qrImage.style.display = "block";
+    }
+
+    async function fetchPixStatus(options = {}) {
+      const { silent = false } = options;
+      try {
+        const response = await fetch("/api/pix-status", { cache: "no-store" });
+        const data = await response.json();
+
+        if (!response.ok || !data.ok) {
+          throw new Error(data.message || "Não foi possível consultar o Pix.");
+        }
+
+        if (data.pixKey) {
+          pixKeyField.value = data.pixKey;
+        }
+        if (data.pixCode) {
+          pixCodeField.value = data.pixCode;
+          updateQrFromCode(data.pixCode);
+        }
+        if (data.cobrancaUrl) {
+          chargeUrl = data.cobrancaUrl;
+          openNubankChargeBtn.href = data.cobrancaUrl;
+        }
+
+        updateStatusChip(data.status);
+
+        if (data.status === "paid" && !autoReleaseDone) {
+          await releaseDownloadAccess();
+        } else if (data.status === "pending" && !silent) {
+          releaseStatus.textContent = "Pagamento ainda não identificado. Assim que confirmar, eu libero automaticamente.";
+        } else if (data.status === "expired" && !silent) {
+          releaseStatus.textContent = "Essa cobrança foi encerrada/expirada. Gere um novo link de cobrança para continuar.";
+        }
+      } catch (error) {
+        updateStatusChip("unknown");
+        if (!silent) {
+          releaseStatus.textContent = "Falha ao consultar o status do Pix agora. Tente novamente em instantes.";
+        }
+      }
+    }
+
+    async function releaseDownloadAccess() {
+      autoReleaseDone = true;
+      releaseStatus.textContent = "Pagamento confirmado. Liberando página de download...";
+
+      try {
+        const response = await fetch("/api/issue-download-token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ source: "nubank-cobranca" }),
+        });
+        const data = await response.json();
+
+        if (!response.ok || !data.ok || !data.downloadUrl) {
+          throw new Error(data.error || "Não foi possível liberar o acesso.");
+        }
+
+        window.location.href = data.downloadUrl;
+      } catch (error) {
+        autoReleaseDone = false;
+        releaseStatus.textContent = "Pagamento detectado, mas a liberação automática falhou. Aguarde alguns segundos para nova tentativa automática.";
+      }
+    }
+
+    function startAutoPolling() {
+      if (pollTimer) {
+        clearInterval(pollTimer);
+      }
+      pollTimer = setInterval(() => {
+        fetchPixStatus({ silent: true });
+      }, 12000);
+    }
+
+    fetchPixStatus({ silent: false });
+    startAutoPolling();
   </script>
 </body>
 </html>
